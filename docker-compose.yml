@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    depends_on:
+      - db
+      - redis
+    environment:
+      UV_THREADPOOL_SIZE: 128
+    volumes:
+      - .:/usr/src/app
+  redis:
+    image: redis:alpine
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: todo-user
+      POSTGRES_PASSWORD: password123!
+      PGPASSWORD: password123!
+      POSTGRES_DB: todo
+    healthcheck:
+      test: ['CMD', '/health-check.sh', 'todo', 'todo-user', 'password123!']
+      interval: 15s
+      timeout: 10s
+      retries: 20
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/health-check.sh:/health-check.sh
+      - ./db/postgresql.conf:/etc/postgresql.conf
+    tmpfs:
+      - /var/lib/postgresql/data
