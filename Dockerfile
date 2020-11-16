@@ -14,7 +14,7 @@ RUN npm run lint
 FROM running as development
 RUN apt-get update && apt-get install -y inotify-tools && npm i -g nodemon
 COPY --from=build-dev /usr/src/app .
-CMD ["start-dev.sh"]
+CMD ["nodemon", "-L", "server"]
 
 FROM build as build-prod
 RUN npm ci --production
