@@ -20,5 +20,5 @@ jobs:
       - name: Build the stack
         run: docker-compose up -d
       # Runs tests
-      - name: Build the stack
-        run: docker-compose exec todo-app npm test
+      - name: Run lint and tests
+        run: docker-compose exec -T todo-app npm test
