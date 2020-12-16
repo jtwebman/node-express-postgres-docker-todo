@@ -12,8 +12,8 @@ ENV NODE_ENV=development
 RUN npm ci
 
 FROM running as development
-RUN npm i -g nodemon
 COPY --from=build-dev /usr/src/app .
+RUN npm i nodemon -g
 CMD ["nodemon", "server"]
 
 FROM build as build-prod
