@@ -8,6 +8,7 @@ HEALTHCHECK CMD node healthcheck
 EXPOSE 3000
 
 FROM build as build-dev
+ENV NODE_ENV=development
 RUN npm ci
 
 FROM running as development

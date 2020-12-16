@@ -4,7 +4,4 @@ node_modules/
 .github/
 coverage/
 .editorconfig
-.nycrc
-.prettierrc
-.travis.yml
 README.md
