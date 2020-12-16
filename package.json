@@ -6,7 +6,7 @@
     "lint": "eslint .",
     "start": "node server",
     "start:dev": "nodemon server.js",
-    "test": "docker-compose up -d && docker-compose exec -T todo-app npm run test:internal",
+    "test": "docker-compose up -d && docker-compose exec -T todo-app find && docker-compose exec -T todo-app npm run test:internal",
     "test:internal": "eslint . && nyc --reporter=html --reporter=text-summary mocha --recursive",
     "test:travis": "NODE_ENV=travis eslint . && nyc mocha --recursive --timeout 30000 && nyc report --reporter=text-lcov | coveralls"
   },
