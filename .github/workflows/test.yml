@@ -16,9 +16,6 @@ jobs:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
-      # Stand up docker compose file for testing
-      - name: Build the stack
-        run: docker-compose up -d
-      # Runs tests
-      - name: Run lint and tests
-        run: docker-compose exec -T todo-app npm test
+      # Stand up docker compose and test
+      - name: Build the stack and test
+        run: npm test
