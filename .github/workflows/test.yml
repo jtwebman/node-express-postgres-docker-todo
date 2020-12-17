@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Docker Versions
-        run: docker --version && docker-compose --version && find && cat .dockerignore
+        run: docker --version && docker-compose --version && find
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
       # Stand up docker compose and test
       - name: Build the stack and test
-        run: npm test
+        run: cat .dockerignore && npm test
