@@ -13,13 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Docker Versions
-        run: sudo apt-get update && sudo apt-get install moby-engine moby-cli -y && docker --version && docker-compose --version
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: See Dockerignore
-        run: cat .dockerignore
       # Stand up docker compose and test
       - name: Build the stack and test
-        run: npm test
+        run: npm install && npm test

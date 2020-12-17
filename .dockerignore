@@ -8,5 +8,6 @@ coverage/
 .gitignore
 .editorconfig
 docker-compose.yml
+Dockerfile
 README.md
 *.log
