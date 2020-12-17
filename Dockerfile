@@ -1,6 +1,7 @@
 FROM node:lts as build
 WORKDIR /usr/src/app
 ADD . .
+RUN find
 
 FROM node:lts-slim as running
 WORKDIR /usr/src/app

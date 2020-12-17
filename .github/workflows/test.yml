@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Docker Versions
-        run: docker --version && docker-compose --version && find
+        run: sudo apt-get update && sudo apt-get install moby moby-cli -y && docker --version && docker-compose --version
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
