@@ -11,10 +11,12 @@ services:
       - redis
     environment:
       UV_THREADPOOL_SIZE: 128
+    tty: true
     volumes:
       - .:/usr/src/app
   redis:
     image: redis:alpine
+    tty: true
   db:
     image: postgres:alpine
     environment:
@@ -29,6 +31,7 @@ services:
       retries: 20
     ports:
       - '5432:5432'
+    tty: true
     volumes:
       - ./db/health-check.sh:/health-check.sh
       - ./db/postgresql.conf:/etc/postgresql.conf
