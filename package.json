@@ -8,7 +8,7 @@
     "start:dev": "nodemon server.js",
     "test": "docker-compose up -d && docker-compose exec todo-app node db/migrate.js && docker-compose exec todo-app npm run test:internal",
     "test:github": "docker-compose up -d && docker-compose exec -T todo-app node db/migrate.js && docker-compose exec -T todo-app npm run test:internal",
-    "test:internal": "eslint . && LOGGER_LEVEL=crit nyc --reporter=html --reporter=text-summary mocha --recursive"
+    "test:internal": "eslint . && LOGGER_LEVEL=crit nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive"
   },
   "repository": {
     "type": "git",
