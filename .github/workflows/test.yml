@@ -13,9 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
-      # Stand up docker compose and test
-      - name: Build the stack and test
-        run: npm install && npm run test:github
+      - name: Install
+        run: npm install
+      - name: Test
+        run: npm run test:github
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
