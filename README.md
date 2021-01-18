@@ -10,7 +10,7 @@ I try to keep it up to date with the latest but there is no guarantee.
 
 To run locally or run the tests you will need to run `docker-compose up -d` to start the containers including postgres, redis, mailhog (to fake sending emails locally).
 
-Here is a list of things this projects has:
+Here is a list of things this projects will eventually have:
 
 - Full support for postgres migrations with a npm script that can be part of your deployments before you start switching out containers.
 - Full support for a username and password login with a user record via API calls
