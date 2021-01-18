@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-host="0.0.0.0"
+host="127.0.0.1"
 user="${2:-todo-user}"
 db="${1:-todo}"
 export PGPASSWORD="${3:-password123!}"

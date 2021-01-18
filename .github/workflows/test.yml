@@ -15,10 +15,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install
-        run: npm install
-      - name: Test
-        run: npm run test:github
+      - name: Npm install
+        run: npm ci
+      - name: Start docker environment for testing
+        run: docker-compose up -d 
+      - name: Run tests
+        run: npm test 
+      - name: Show docker compose logs
+        run: docker-compose logs
+        if: ${{ always() }}
+      - name: Stop docker environment for testing
+        run: docker-compose down
+        if: ${{ always() }}
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:

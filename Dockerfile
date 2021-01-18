@@ -11,7 +11,7 @@ FROM build as build-dev
 RUN npm ci
 
 FROM running as development
-RUN apt-get update && apt-get install -y inotify-tools && npm i -g nodemon
+RUN apt-get update && npm i -g nodemon
 COPY --from=build-dev /usr/src/app .
 CMD ["nodemon", "server"]
 

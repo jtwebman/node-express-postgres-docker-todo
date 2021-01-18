@@ -8,17 +8,17 @@ let winstonFormat = winston.format.json();
 let metaData = {
   app: pjson.name,
   version: pjson.version,
-  time: new Date().toISOString()
+  time: new Date().toISOString(),
 };
 
 if (process.env.NODE_ENV != 'production') {
   winstonFormat = winston.format.combine(
     winston.format.json(),
     winston.format.prettyPrint(),
-    winston.format.colorize()
+    winston.format.colorize(),
   );
   metaData = {
-    time: new Date().toISOString()
+    time: new Date().toISOString(),
   };
 }
 
@@ -35,9 +35,10 @@ function getLogger(config) {
         level: config.get('LOGGER_LEVEL'),
         format: winstonFormat,
         handleExceptions: true,
-        handleRejections: true
-      })
-    ]
+        handleRejections: true,
+        silent: process.env.NODE_ENV === 'test',
+      }),
+    ],
   });
 }
 

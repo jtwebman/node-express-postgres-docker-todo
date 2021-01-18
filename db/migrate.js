@@ -17,9 +17,8 @@ const getLogger = require('../server/lib/get-logger');
 const waitDBConnect = require('../server/data/wait-db-connect');
 
 const db = getDBConnection(config);
-const logger = getLogger(config);
-
 const patchFolder = path.join(__dirname, 'patches');
+const logger = getLogger(config);
 
 const migrationTableExistsSql = `SELECT EXISTS (
   SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'migrations'
@@ -36,40 +35,82 @@ const getCurrentMigrationsSql = 'SELECT filename FROM migrations';
 const insertPatchRanSql = `INSERT INTO migrations (filename) VALUES ($1)`;
 
 /**
- * Runs the patch files not already ran in synchronously then return the results
- * @param {Object} migrateDb pdp db object for migrations
- * @param {Object} patchesToRun array of files to run to patch the db
+ * Waits for the db to be ready before running migration sql statements.
+ * @return {Object} returns a new conext object with the db in it.
  */
-async function runPatches(migrateDb, patchesToRun) {
-  for (let i = 0, len = patchesToRun.length; i < len; i++) {
-    const filename = patchesToRun[i];
-    logger.info(`Running ${filename}.`);
-    const sql = new QueryFile(path.join(patchFolder, filename));
-    await migrateDb.none(sql);
-    await migrateDb.none(insertPatchRanSql, filename);
-  }
+async function makeSureDBisUp() {
+  await waitDBConnect(db, logger);
+  return {db};
 }
 
 /**
- * Runs the migrations and still needs to be a function as there is no top level await
+ * Adds to the context if the migration table exists
+ * @param {Object} context object
+ * @return {Object} returns the same context object passed in with the added values
  */
-async function doMigration() {
-  const migrateDb = await waitDBConnect(db, logger);
-  const migrationTableExists = (await migrateDb.one(migrationTableExistsSql)).exists;
-  logger.info('migrationTableExists', {migrationTableExists});
-  if (!migrationTableExists) {
-    await migrateDb.query(createMigrationTableSql);
-  }
-  const currentAppliedPatches = (await migrateDb.query(getCurrentMigrationsSql)).map(f => f.filename);
-  logger.info('current patches', {currentAppliedPatches});
-  logger.info(`reading patches from ${patchFolder}`);
-  const patchesToRun = fs
-    .readdirSync(patchFolder)
-    .filter(name => name.charAt(0) !== '.' && !currentAppliedPatches.includes(name))
-    .sort();
-  logger.info('running patches', {patchesToRun});
-  const results = await runPatches(migrateDb, patchesToRun);
-  logger.info('db migration completed', {results});
-  migrateDb.$pool.end();
+async function migrationTableExists(context) {
+  const results = await context.db.one(migrationTableExistsSql);
+  context.migrationTableExists = results.exists;
+  return context;
 }
-doMigration();
+
+/**
+ * Checks if the migratio ntable exists. If it doesn't it creates it.
+ * @param {Object} context object
+ * @return {Object} returns the same context object passed in
+ */
+async function createMigrationTableIfNeeded(context) {
+  if (context.migrationTableExists) return context;
+  await context.db.query(createMigrationTableSql);
+  return context;
+}
+
+/**
+ * Gets the list of the current patches applied adding it to the context
+ * @param {Object} context object
+ * @return {Object} returns the same context object passed in with the added values
+ */
+async function getCurrentAppliedPatches(context) {
+  const results = await context.db.query(getCurrentMigrationsSql);
+  context.currentAppliedPatches = results.map(f => f.filename);
+  return context;
+}
+
+/**
+ * Gets the list of patches in the folder and filters out the ones already ran
+ * @param {Object} context object
+ * @return {Object} returns the same context object passed in with the added values
+ */
+function getPatchesToRun(context) {
+  context.patchesToRun = fs
+    .readdirSync(patchFolder)
+    .filter(name => name.charAt(0) !== '.' && !context.currentAppliedPatches.includes(name))
+    .sort();
+  return context;
+}
+
+/**
+ * Runs the patch files not already ran in synchronously adding to the context the results
+ * @param {Object} context object
+ * @Return {Object} returns the same context object passed in with the added values
+ */
+async function runPatches(context) {
+  context.results = [];
+  for (let i = 0, len = context.patchesToRun.length; i < len; i++) {
+    const filename = context.patchesToRun[i];
+    logger.info(`Running ${filename}.`);
+    const sql = new QueryFile(path.join(patchFolder, filename));
+    const results = await context.db.none(sql);
+    await context.db.none(insertPatchRanSql, filename);
+    context.results.push(results);
+  }
+  return context;
+}
+
+makeSureDBisUp()
+  .then(migrationTableExists)
+  .then(createMigrationTableIfNeeded)
+  .then(getCurrentAppliedPatches)
+  .then(getPatchesToRun)
+  .then(runPatches)
+  .then(context => context.db.$pool.end());

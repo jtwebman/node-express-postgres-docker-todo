@@ -1,7 +1,7 @@
 'use strict';
 
 const pgp = require('pg-promise')({
-  capSQL: true
+  capSQL: true,
 });
 
 // Override timestamp no timezone to correct Date object

@@ -15,7 +15,7 @@ function getTestContext(config, logger, db) {
       return {
         config,
         logger,
-        db
+        db,
       };
     });
 }

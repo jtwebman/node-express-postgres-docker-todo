@@ -18,7 +18,7 @@ const killSignals = {
   SIGHUP: 1,
   SIGINT: 2,
   SIGUSR2: 12,
-  SIGTERM: 15
+  SIGTERM: 15,
 };
 
 

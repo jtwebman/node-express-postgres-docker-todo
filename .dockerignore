@@ -3,6 +3,7 @@
 .github/
 node_modules/
 coverage/
+test/
 .DS_Store
 .dockerignore
 .gitignore

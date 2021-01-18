@@ -17,7 +17,7 @@ function waitDBConnect(db, logger) {
     logger.info('Connected to db!');
     return db;
   }, {
-    retries: 6
+    retries: 6,
   });
 }
 
