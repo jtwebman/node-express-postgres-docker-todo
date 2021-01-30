@@ -1,8 +1,8 @@
-FROM node:lts as build
+FROM node:lts-buster as build
 WORKDIR /usr/src/app
 ADD . .
 
-FROM node:lts-slim as running
+FROM node:lts-buster-slim as running
 WORKDIR /usr/src/app
 HEALTHCHECK CMD node healthcheck
 EXPOSE 3000
