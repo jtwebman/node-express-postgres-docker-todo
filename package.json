@@ -1,6 +1,6 @@
 {
   "name": "node-express-postgres-docker-todo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple node express postgres docker ToDo app for starting new services and testing docker deployments with kubernetes.",
   "scripts": {
     "lint": "eslint .",
