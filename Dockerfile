@@ -3,6 +3,11 @@ WORKDIR /usr/src/app
 ADD . .
 
 FROM node:lts-buster-slim as running
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y autoremove && \ 
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/src/app
 HEALTHCHECK CMD node healthcheck
 EXPOSE 3000
