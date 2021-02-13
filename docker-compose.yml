@@ -8,7 +8,6 @@ services:
       target: development
     depends_on:
       - db
-      - redis
     environment:
       UV_THREADPOOL_SIZE: 128
     ports:
@@ -16,9 +15,16 @@ services:
     tty: true
     volumes:
       - .:/usr/src/app
-  redis:
-    image: redis:alpine
-    tty: true
+  db-migration:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: npm run db:migration
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
   db:
     image: postgres:alpine
     environment:

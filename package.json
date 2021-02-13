@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Simple node express postgres docker ToDo app for starting new services and testing docker deployments with kubernetes.",
   "scripts": {
+    "db:migration": "node db/migrate",
     "lint": "eslint .",
     "start": "node server",
     "start:dev": "nodemon server.js",

@@ -3,7 +3,6 @@
 /*
 Very simple migration script that just uses a patches folder with sql scripts and stores
 scripts ran in a migrations tables.
-
 If the scripts start with a timestamp they will always be ran in order.
 */
 
