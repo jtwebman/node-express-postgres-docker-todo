@@ -2,7 +2,7 @@ import winston from 'winston';
 
 import {Config} from './config';
 
-const pjson = require('../../package.json');
+const pjson = require('../package.json');
 
 let winstonFormat = winston.format.json();
 let metaData = {

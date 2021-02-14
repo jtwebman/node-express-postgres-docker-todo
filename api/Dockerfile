@@ -9,15 +9,15 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/src/app
-HEALTHCHECK CMD node healthcheck
 EXPOSE 3000
 
 FROM build as build-dev
 RUN npm ci && npm run build
 
 FROM running as development
-RUN apt-get update && npm i -g nodemon
+RUN apt-get update && npm i -g nodemon ts-node
 COPY --from=build-dev /usr/src/app .
+HEALTHCHECK CMD ts-node src/healthcheck.ts
 CMD ["nodemon", "./src/server.ts"]
 
 FROM build as build-prod
@@ -28,4 +28,6 @@ COPY --from=build-prod /usr/src/app/package.json ./package.json
 COPY --from=build-prod /usr/src/app/package-lock.json ./package-lock.json
 COPY --from=build-prod /usr/src/app/node_modules ./node_modules
 COPY --from=build-dev /usr/src/app/dist ./dist
+COPY --from=build-dev /usr/src/app/db/patches ./db/patches
+HEALTHCHECK CMD node dist/src/healthcheck.js
 CMD ["node", "./dist/src/server.js"]
