@@ -13,16 +13,16 @@ services:
       - '3000:3000'
     tty: true
     volumes:
-      - .:/usr/src/app
+      - ./api:/usr/src/app
   db-migration:
     build:
       context: ./api/
       target: development
-    command: npm run db:migration
+    command: ['ts-node', './db/migrate.ts', '/usr/src/app/db/patches']
     depends_on:
       - db
     volumes:
-      - .:/usr/src/app
+      - ./api:/usr/src/app
   db:
     image: postgres:alpine
     environment:
