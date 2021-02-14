@@ -1,6 +1,6 @@
-'use strict';
+import winston from 'winston';
 
-const winston = require('winston');
+import {Config} from './config';
 
 const pjson = require('../../package.json');
 
@@ -17,17 +17,11 @@ if (process.env.NODE_ENV != 'production') {
     winston.format.prettyPrint(),
     winston.format.colorize(),
   );
-  metaData = {
-    time: new Date().toISOString(),
-  };
 }
 
-/**
- * Gets a new winston logger client object
- * @param {Object} config node config object
- * @return {Object} a winston logger client
- */
-function getLogger(config) {
+export interface Logger extends winston.Logger {}
+
+export function getLogger(config: Config) : Logger {
   return winston.createLogger({
     defaultMeta: metaData,
     transports: [
@@ -35,11 +29,8 @@ function getLogger(config) {
         level: config.get('LOGGER_LEVEL'),
         format: winstonFormat,
         handleExceptions: true,
-        handleRejections: true,
         silent: process.env.NODE_ENV === 'test',
       }),
     ],
   });
 }
-
-module.exports = getLogger;

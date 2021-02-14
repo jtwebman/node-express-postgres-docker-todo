@@ -1,17 +1,16 @@
-'use strict';
+import stoppable from 'stoppable';
 
-const config = require('config');
-const stoppable = require('stoppable');
+import {getApp} from './app';
+import {getConfig} from './config';
+import {Context, getContext} from './context';
+import {getDB} from './db';
+import {getLogger} from './logger';
+import {getStatusApp} from './status';
 
-const getApp = require('./server/app');
-const getStatusApp = require('./server/status');
-const getDBConnection = require('./server/data/get-db-connection');
-const getContext = require('./server/get-context');
-const getLogger = require('./server/lib/get-logger');
-
+const config = getConfig();
 const port = config.get('PORT');
 const statusPort = config.get('STATUS_PORT');
-const db = getDBConnection(config);
+const db = getDB(config);
 const logger = getLogger(config);
 
 const killSignals = {
@@ -30,7 +29,7 @@ const killSignals = {
  * @param  {String} signal signal used to exit
  * @param  {Number} value  signal value
  */
-function shutdown(nodeApp, statusApp, context, signal, value) {
+function shutdown(nodeApp: stoppable.StoppableServer, statusApp: stoppable.StoppableServer, context: Context, signal: string, value: number) {
   context.logger.info(`Trying shutdown, got signal ${signal}`);
   nodeApp.stop(() => {
     context.logger.info('Node app stopped.');
@@ -47,9 +46,9 @@ function shutdown(nodeApp, statusApp, context, signal, value) {
  * Starts the express node and status apps with graceful shutdown
  * @param {Object} context object container db, config, etc...
  */
-function start(context) {
+function start(context: Context) {
   const app = getApp(context);
-  const status = getStatusApp(context);
+  const status = getStatusApp();
 
   const nodeApp = stoppable(app.listen(port, () => context.logger.info(`Node app listening on port ${port}!`)));
   const statusApp = stoppable(status.listen(statusPort));
