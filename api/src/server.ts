@@ -1,11 +1,11 @@
 import stoppable from 'stoppable';
 
-import {getApp} from './app';
-import {getConfig} from './config';
-import {Context, getContext} from './context';
-import {getDB} from './db';
-import {getLogger} from './logger';
-import {getStatusApp} from './status';
+import { getApp } from './app';
+import { getConfig } from './config';
+import { Context, getContext } from './context';
+import { getDB } from './db';
+import { getLogger } from './logger';
+import { getStatusApp } from './status';
 
 const config = getConfig();
 const port = config.get('PORT');
@@ -20,7 +20,6 @@ const killSignals = {
   SIGTERM: 15,
 };
 
-
 /**
  * Shutdown apps correctly
  * @param  {Object} nodeApp the node express app
@@ -29,7 +28,13 @@ const killSignals = {
  * @param  {String} signal signal used to exit
  * @param  {Number} value  signal value
  */
-function shutdown(nodeApp: stoppable.StoppableServer, statusApp: stoppable.StoppableServer, context: Context, signal: string, value: number) {
+function shutdown(
+  nodeApp: stoppable.StoppableServer,
+  statusApp: stoppable.StoppableServer,
+  context: Context,
+  signal: string,
+  value: number
+) {
   context.logger.info(`Trying shutdown, got signal ${signal}`);
   nodeApp.stop(() => {
     context.logger.info('Node app stopped.');
@@ -61,7 +66,7 @@ function start(context: Context) {
 
 getContext(config, logger, db)
   .then(start)
-  .catch(error => {
+  .catch((error) => {
     logger.info(`Failed to start services: ${error.stack}`);
     process.exit(1);
   });

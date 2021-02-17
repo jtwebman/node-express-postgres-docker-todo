@@ -39,7 +39,7 @@ services:
       - '15432:5432'
     tty: true
     volumes:
-      - ./api/db/health-check.sh:/health-check.sh
-      - ./api/db/postgresql.conf:/etc/postgresql.conf
+      - ./db/health-check.sh:/health-check.sh
+      - ./db/postgresql.conf:/etc/postgresql.conf
     tmpfs:
       - /var/lib/postgresql/data

@@ -6,9 +6,9 @@ on: push
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
-  test:
+  test-api:
     # Name the Job
-    name: Lint, Tests, and Deploy
+    name: Lint and Test API
     # Set the type of machine to run on
     runs-on: ubuntu-latest
 
@@ -16,11 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Npm install
-        run: npm ci
+        run: pushd api && npm ci && npm run build && popd
       - name: Start docker environment for testing
         run: docker-compose up -d 
       - name: Run tests
-        run: npm test 
+        run: pushd api && npm test && popd
       - name: Show docker compose logs
         run: docker-compose logs
         if: ${{ always() }}

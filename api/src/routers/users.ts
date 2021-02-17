@@ -1,10 +1,10 @@
 import express from 'express';
-import {StatusCodes} from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
-import {Context} from '../context';
-import {create} from '../app/user';
+import { Context } from '../context';
+import { create } from '../app/user';
 
-export function getUsersRouter(context: Context) {
+export function getUsersRouter(context: Context): express.Router {
   // eslint-disable-next-line new-cap
   const router = express.Router();
 

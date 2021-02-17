@@ -1,3 +1,4 @@
-node_modules/
+dist/
+ode_modules/
 coverage/
 package.json

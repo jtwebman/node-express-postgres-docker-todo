@@ -1,9 +1,9 @@
 import express from 'express';
 
-import {Context} from './context';
-import {getUsersRouter} from './routers/users';
+import { Context } from './context';
+import { getUsersRouter } from './routers/users';
 
-export function getApp(context: Context) : express.Application {
+export function getApp(context: Context): express.Application {
   const app = express();
 
   app.disable('x-powered-by');

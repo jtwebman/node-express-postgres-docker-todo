@@ -1,4 +1,4 @@
 export interface Result<T> {
-  errors?:[string],
-  data: T
+  errors?: [string];
+  data: T;
 }

@@ -1,7 +1,7 @@
 import config from 'config';
 
-export interface Config extends config.IConfig {}
+export type Config = config.IConfig;
 
-export function getConfig() : Config {
+export function getConfig(): Config {
   return config;
 }

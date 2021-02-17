@@ -8,10 +8,10 @@ If the scripts start with a timestamp they will always be ran in order.
 import config from 'config';
 import fs from 'fs';
 import path from 'path';
-import {QueryFile} from 'pg-promise';
+import { QueryFile } from 'pg-promise';
 
-import {Database, getDB, waitDBConnect} from '../src/db'
-import {getLogger} from '../src/logger';
+import { Database, getDB, waitDBConnect } from '../src/db';
+import { getLogger } from '../src/logger';
 
 const db = getDB(config);
 const args = process.argv.slice(2);
@@ -19,15 +19,15 @@ const patchFolder = path.join(args[0]);
 const logger = getLogger(config);
 
 interface MigrationContext {
-  db: Database,
-  migrationTableExists?: boolean,
-  currentAppliedPatches: string[],
-  patchesToRun: string[],
-  results?: unknown[]
+  db: Database;
+  migrationTableExists?: boolean;
+  currentAppliedPatches: string[];
+  patchesToRun: string[];
+  results?: unknown[];
 }
 
 interface MigrationFile {
-  filename: string
+  filename: string;
 }
 
 const migrationTableExistsSql = `SELECT EXISTS (
@@ -48,12 +48,12 @@ const insertPatchRanSql = `INSERT INTO migrations (filename) VALUES ($1)`;
  * Waits for the db to be ready before running migration sql statements.
  * @return {Object} returns a new conext object with the db in it.
  */
-async function makeSureDBisUp() : Promise<MigrationContext> {
+async function makeSureDBisUp(): Promise<MigrationContext> {
   await waitDBConnect(db, logger);
   const newContext: MigrationContext = {
     db,
     currentAppliedPatches: [],
-    patchesToRun: []
+    patchesToRun: [],
   };
   return newContext;
 }
@@ -87,7 +87,7 @@ async function createMigrationTableIfNeeded(context: MigrationContext) {
  */
 async function getCurrentAppliedPatches(context: MigrationContext) {
   const results = await context.db.query<[MigrationFile]>(getCurrentMigrationsSql);
-  context.currentAppliedPatches = results.map(f => f.filename);
+  context.currentAppliedPatches = results.map((f) => f.filename);
   return context;
 }
 
@@ -99,7 +99,7 @@ async function getCurrentAppliedPatches(context: MigrationContext) {
 function getPatchesToRun(context: MigrationContext) {
   context.patchesToRun = fs
     .readdirSync(patchFolder)
-    .filter(name => name.charAt(0) !== '.' && !context.currentAppliedPatches.includes(name))
+    .filter((name) => name.charAt(0) !== '.' && !context.currentAppliedPatches.includes(name))
     .sort();
   return context;
 }
@@ -119,7 +119,7 @@ async function runPatches(context: MigrationContext) {
       const results = await context.db.none(sql);
       await context.db.none(insertPatchRanSql, filename);
       context.results.push(results);
-    } catch(error) {
+    } catch (error) {
       logger.error(`Error Running ${filename}: ${error.stack}`);
     }
   }
@@ -132,4 +132,4 @@ makeSureDBisUp()
   .then(getCurrentAppliedPatches)
   .then(getPatchesToRun)
   .then(runPatches)
-  .then(context => context.db.$pool.end());
+  .then((context) => context.db.$pool.end());

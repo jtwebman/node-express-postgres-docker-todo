@@ -31,8 +31,9 @@
     "node_modules"
   ],
   "include": [
-    "./src/**/*.tsx",
+    "./config/**/*.ts",
+    "./db/**/*.ts",
     "./src/**/*.ts",
-    "./db/**/*.ts"
+    "./tests/**/*.ts"
   ]
 }
