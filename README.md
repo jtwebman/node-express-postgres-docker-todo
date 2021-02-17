@@ -1,7 +1,7 @@
 # Node Express Postgres Docker ToDo Project
 
 [![Coverage Status](https://coveralls.io/repos/github/jtwebman/node-express-postgres-docker-todo/badge.svg?branch=master)](https://coveralls.io/github/jtwebman/node-express-postgres-docker-todo?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/jtwebman/node-express-postgres-docker-todo/badge.svg?targetFile=package.json)](https://snyk.io/test/github/jtwebman/node-express-postgres-docker-todo?targetFile=package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/jtwebman/node-express-postgres-docker-todo/badge.svg?targetFile=api/package.json)](https://snyk.io/test/github/jtwebman/node-express-postgres-docker-todo?targetFile=api/package.json)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 This is just a simple Node.js Express Docker app that starts and has basic login API with some simple routes for a ToDo app. I use it to start new projects as well as to just test docker and kubernetes deployments.
