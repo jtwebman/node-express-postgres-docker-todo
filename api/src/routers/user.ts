@@ -9,7 +9,7 @@ export function getUsersRouter(context: Context): express.Router {
   const router = express.Router();
 
   router.post('/', async (req, res) => {
-    const results = await create(context.db, req.body);
+    const results = await create(context, req.body);
     if (results.errors) {
       return res.status(StatusCodes.BAD_REQUEST).send(results.errors);
     }

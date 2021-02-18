@@ -1,20 +1,15 @@
-import { Database } from '../db';
+import { Context } from '../context';
 import { Result } from './result';
 
-export interface User {
-  id?: number;
-  name: string;
-  email: string;
-  email_verified: boolean;
-  username: string;
-  password?: string;
-  archived_at?: Date;
-  banned_at?: Date;
-  created_at?: Date;
-  updated_at?: Date;
-}
+import { User } from '../types/user';
+import { validateNewUser } from '../validation/user';
+import { createUser } from '../data/user';
 
-export function create(_db: Database, newUser: any): Result<User> {
-  const createdUser: User = newUser;
+export async function create(context: Context, newUser: unknown): Promise<Result<User>> {
+  const valideNewUser = validateNewUser(newUser);
+  if (!valideNewUser.data) {
+    return { errors: valideNewUser.errors };
+  }
+  const createdUser = await createUser(context, valideNewUser.data);
   return { data: createdUser };
 }

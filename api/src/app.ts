@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { Context } from './context';
-import { getUsersRouter } from './routers/users';
+import { getUsersRouter } from './routers/user';
 
 export function getApp(context: Context): express.Application {
   const app = express();
