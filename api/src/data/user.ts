@@ -10,9 +10,8 @@ RETURNING id`;
 
 export async function createUser(context: Context, newUser: NewUser): Promise<Result<User>> {
   try {
-    const userId = await context.db.one<{ id: number }>(insertUser, newUser);
-    const user = await getUserById(context, userId.id);
-    return { data: user };
+    const insertResults = await context.db.one<{ id: number }>(insertUser, newUser);
+    return getUserById(context, insertResults.id);
   } catch (error) {
     if (error.constraint === 'users_email_key') {
       return {
@@ -25,11 +24,12 @@ export async function createUser(context: Context, newUser: NewUser): Promise<Re
         ],
       };
     }
+    context.logger.error(`Error creating user in db: ${error.stack}`);
     return {
       errors: [
         {
-          message: error.stack,
-          slug: 'create-user-db-error',
+          message: 'Server error creating users',
+          slug: 'create-user-db-server-error',
           type: AppErrorTypes.server,
         },
       ],
@@ -52,6 +52,19 @@ FROM users
 WHERE id = $[id]
 `;
 
-export async function getUserById(context: Context, id: number): Promise<User> {
-  return context.db.one<User>(selectUser, { id });
+export async function getUserById(context: Context, id: number): Promise<Result<User>> {
+  try {
+    const user = await context.db.one<User>(selectUser, { id });
+    return { data: user };
+  } catch (error) {
+    return {
+      errors: [
+        {
+          message: `Server error get user by id ${id}`,
+          slug: 'get-user-by-id-db-server-error',
+          type: AppErrorTypes.server,
+        },
+      ],
+    };
+  }
 }

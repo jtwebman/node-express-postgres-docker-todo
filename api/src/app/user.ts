@@ -17,9 +17,5 @@ export async function create(context: Context, newUser: unknown): Promise<Result
     ...valideNewUser.data,
     password: await bcrypt.hash(valideNewUser.data.password, saltRounds),
   };
-  const createdUserResult = await createUser(context, newUserHashedPassword);
-  if (!createdUserResult.data) {
-    return { errors: createdUserResult.errors };
-  }
-  return { data: createdUserResult.data };
+  return createUser(context, newUserHashedPassword);
 }
