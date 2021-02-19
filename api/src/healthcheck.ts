@@ -2,7 +2,7 @@ import config from 'config';
 import http from 'http';
 
 const options: http.RequestOptions = {
-  host: '127.0.0.1',
+  host: '0.0.0.0',
   port: config.get('STATUS_PORT'),
   path: '/status',
   timeout: 2000,
@@ -17,8 +17,8 @@ const request = http.request(options, (res) => {
   }
 });
 
-request.on('error', () => {
-  console.log('ERROR');
+request.on('error', (error) => {
+  console.log(`ERROR: ${error.stack}`);
   process.exit(1);
 });
 
