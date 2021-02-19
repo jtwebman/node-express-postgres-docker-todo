@@ -16,6 +16,7 @@ export const userSchema = joi
     id: joi.number().required().integer().positive(),
     name: joi.string().required().min(2).max(50),
     email: joi.string().required().email(),
+    emailVerified: joi.boolean().default(false),
     username: joi.string().required().min(3).max(50),
     archivedAt: joi.date(),
     bannedAt: joi.date(),

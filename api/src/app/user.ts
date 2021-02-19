@@ -1,5 +1,7 @@
+import bcrypt from 'bcrypt';
+
 import { Context } from '../context';
-import { Result } from './result';
+import { Result } from '../result';
 
 import { User } from '../types/user';
 import { validateNewUser } from '../validation/user';
@@ -10,6 +12,14 @@ export async function create(context: Context, newUser: unknown): Promise<Result
   if (!valideNewUser.data) {
     return { errors: valideNewUser.errors };
   }
-  const createdUser = await createUser(context, valideNewUser.data);
-  return { data: createdUser };
+  const saltRounds = context.config.get<number>('PASSWORD_SALT_ROUNDS');
+  const newUserHashedPassword = {
+    ...valideNewUser.data,
+    password: await bcrypt.hash(valideNewUser.data.password, saltRounds),
+  };
+  const createdUserResult = await createUser(context, newUserHashedPassword);
+  if (!createdUserResult.data) {
+    return { errors: createdUserResult.errors };
+  }
+  return { data: createdUserResult.data };
 }
