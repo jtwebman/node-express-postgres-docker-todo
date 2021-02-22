@@ -21,7 +21,7 @@
     "config": "3.3.3",
     "express": "4.17.1",
     "http-status-codes": "2.1.4",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "pg-promise": "10.9.2",
     "stoppable": "1.1.0",
     "typesafe-joi": "2.1.0",
