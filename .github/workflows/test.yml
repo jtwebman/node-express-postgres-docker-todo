@@ -21,11 +21,25 @@ jobs:
         run: docker-compose up -d
       - name: Run tests
         run: pushd api && npm test && popd
-      - name: Send Coverall Report
-        run: pushd api && npm run coveralls
       - name: Show docker compose logs
         run: docker-compose logs
         if: ${{ always() }}
       - name: Stop docker environment for testing
         run: docker-compose down
         if: ${{ always() }}
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: ${{matrix.os}}-node-${{ matrix.node }}
+          parallel: true
+
+  finish:
+    needs: test-api
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
