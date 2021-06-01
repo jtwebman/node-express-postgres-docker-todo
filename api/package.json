@@ -9,7 +9,7 @@
     "dev": "NODE_ENV=dev PORT=8000 nodemon ./src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "npm run lint && NODE_ENV=test nyc --reporter=lcov --reporter=html --reporter=text-summary mocha -r ts-node/register --timeout 10000 \"tests/**/*.ts\""
+    "test": "npm run lint && NODE_ENV=test nyc --reporter=lcov --reporter=html --reporter=text-summary mocha -r ts-node/register --timeout 10000 \"tests/**/*.ts\" | coveralls"
   },
   "author": "JT Turner <jtwebman@gmail.com> (https://jtwebman.com)",
   "license": "MIT",
