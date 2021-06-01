@@ -21,7 +21,7 @@ HEALTHCHECK CMD ts-node src/healthcheck.ts
 CMD ["nodemon", "./src/server.ts"]
 
 FROM build as build-prod
-RUN npm ci --production && npm run build
+RUN npm ci --production
 
 FROM running as production
 COPY --from=build-prod /usr/src/app/package.json ./package.json
