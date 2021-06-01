@@ -21,6 +21,8 @@ jobs:
         run: docker-compose up -d
       - name: Run tests
         run: pushd api && npm test && popd
+      - name: Send Coverall Report
+        run: pushd api && npm run coveralls
       - name: Show docker compose logs
         run: docker-compose logs
         if: ${{ always() }}
