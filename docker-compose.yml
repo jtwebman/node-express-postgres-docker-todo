@@ -4,11 +4,12 @@ services:
   api:
     build:
       context: ./api/
-      target: development
+      dockerfile: ./api/Dockerfile.dev
     depends_on:
       - db
     environment:
       UV_THREADPOOL_SIZE: 128
+      NODE_ENV: development
     ports:
       - '3000:3000'
     tty: true
@@ -18,8 +19,14 @@ services:
   db-migration:
     build:
       context: ./api/
-      target: development
-    command: ['ts-node', './db/migrate.ts', '/usr/src/app/db/patches']
+      dockerfile: ./api/Dockerfile.dev
+    command: ['node', './db/run-migration.js', '/usr/src/app/db/patches']
+    environment:
+      UV_THREADPOOL_SIZE: 128
+      NODE_ENV: development
+      PG_CONNECTION: postgres://todo-user:password123!@db:5432/dev-todo
+      PG_MIGRATION_CONNECTION: postgres://root-user:password123!@db:5432/postgres
+    tty: true
     depends_on:
       - db
     volumes:
@@ -27,12 +34,12 @@ services:
   db:
     image: postgres:alpine
     environment:
-      POSTGRES_USER: todo-user
+      POSTGRES_DB: postgres
+      POSTGRES_USER: root-user
       POSTGRES_PASSWORD: password123!
       PGPASSWORD: password123!
-      POSTGRES_DB: todo
     healthcheck:
-      test: ['CMD', '/health-check.sh', 'todo', 'todo-user', 'password123!']
+      test: ['CMD', '/health-check.sh', 'postgres', 'root-user', 'password123!']
       interval: 15s
       timeout: 10s
       retries: 20

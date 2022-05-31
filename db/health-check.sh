@@ -2,8 +2,8 @@
 set -eo pipefail
 
 host="127.0.0.1"
-user="${2:-todo-user}"
-db="${1:-todo}"
+user="${2:-root-user}"
+db="${1:-postgres}"
 export PGPASSWORD="${3:-password123!}"
 
 args=(

@@ -7,9 +7,9 @@ WORKDIR /usr/src/app
 HEALTHCHECK CMD node healthcheck
 EXPOSE 3000
 
-FROM build as build-prod
-RUN npm ci --production
+FROM build as build-dev
+RUN npm ci
 
-FROM running as production
-COPY --from=build-prod /usr/src/app .
-CMD ["node", "server.js"]
+FROM running as development
+COPY --from=build-dev /usr/src/app .
+CMD ["npm", "run", "start:dev"]
