@@ -1,14 +1,13 @@
 {
   "name": "node-express-postgres-docker-todo-api",
   "version": "1.1.0",
-  "description": "Simple node hello world for testing deployments and starting new simple projects.",
+  "description": "Node.js Express Postgres Docker Todo API service.",
   "scripts": {
     "lint": "eslint .",
     "start": "node server",
     "start:dev": "nodemon server.js",
-    "test": "eslint . && nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive",
-    "test:travis": "eslint . && nyc mocha --recursive && nyc report --reporter=text-lcov | coveralls"
-  },
+    "test": "eslint . && nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive"
+ },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jtwebman/node-express-postgres-docker-todo.git"
