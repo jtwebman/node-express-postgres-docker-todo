@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: ./api/
-      dockerfile: ./api/Dockerfile.dev
+      dockerfile: Dockerfile.dev
     depends_on:
       - db
     environment:
@@ -19,7 +19,7 @@ services:
   db-migration:
     build:
       context: ./api/
-      dockerfile: ./api/Dockerfile.dev
+      dockerfile: Dockerfile.dev
     command: ['node', './db/run-migration.js', '/usr/src/app/db/patches']
     environment:
       UV_THREADPOOL_SIZE: 128
