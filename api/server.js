@@ -3,37 +3,65 @@
 const config = require('config');
 const stoppable = require('stoppable');
 
-const app = require('./server/app');
-const status = require('./server/status');
+const { getApp } = require('./server/app');
+const { getContext } = require('./server/context');
+const { getDB } = require('./server/db/pg-client');
+const { logger, transport } = require('./server/logger');
 
-const port = config.get('PORT');
-const nodeApp = stoppable(app.listen(port, () => console.log(`Node app listening on port ${port}!`)));
-
-const statusPort = config.get('STATUS_PORT');
-const statusApp = stoppable(status.listen(statusPort));
+const db = getDB(config.PG_CONNECTION);
 
 const killSignals = {
   SIGHUP: 1,
   SIGINT: 2,
+  SIGUSR2: 12,
   SIGTERM: 15,
 };
 
-/**
- * Shutdown apps correctly
- * @param  {String} signal signal used to exit
- * @param  {Number} value  signal value
- */
-function shutdown(signal, value) {
-  console.log(`Trying shutdown by got ${signal}`);
+function shutdown(nodeApp, context, signal, value) {
+  context.logger.info(`Trying shutdown, got signal ${signal}`);
   nodeApp.stop(() => {
-    console.log('Node app stopped.');
-    statusApp.stop(() => {
-      console.log('Status app stopped.');
+    context.logger.info('Node app stopped.');
+    context.db.$pool.end();
+    context.logger.info('DB connections stopped.');
+    transport.on('ready', () => {
       process.exit(128 + value);
     });
   });
 }
 
-process.on('SIGHUP', () => shutdown('SIGHUP', killSignals.SIGHUP));
-process.on('SIGINT', () => shutdown('SIGINT', killSignals.SIGINT));
-process.on('SIGTERM', () => shutdown('SIGTERM', killSignals.SIGTERM));
+function start(context) {
+  const app = getApp(context);
+  const nodeApp = stoppable(app.listen(config.PORT, () => context.logger.info(`Listening on port ${config.PORT}!`)));
+
+  nodeApp.timeout = 0;
+  nodeApp.keepAliveTimeout = 60000; // 60 secs
+
+  process.on('unhandledRejection', (error, promise) => {
+    context.logger.error(`unhandledRejection at: ${promise} `, {
+      stack: error.stack,
+      error: JSON.stringify(error),
+    });
+  });
+
+  process.on('uncaughtException', error => {
+    context.logger.error(`uncaughtException: ${error.message}`, {
+      stack: error.stack,
+      error: JSON.stringify(error),
+    });
+  });
+
+  process.once('SIGUSR2', () => shutdown(nodeApp, context, 'SIGUSR2', killSignals.SIGUSR2));
+  process.once('SIGHUP', () => shutdown(nodeApp, context, 'SIGHUP', killSignals.SIGHUP));
+  process.once('SIGINT', () => shutdown(nodeApp, context, 'SIGINT', killSignals.SIGINT));
+  process.once('SIGTERM', () => shutdown(nodeApp, context, 'SIGTERM', killSignals.SIGTERM));
+
+  return nodeApp;
+}
+
+// First get context that waits for the DB to be available before starting the web server
+getContext(config, logger, db)
+  .then(start)
+  .catch(error => {
+    logger.info(`Failed to start services: ${error.stack}`);
+    process.exit(1);
+  });

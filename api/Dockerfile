@@ -1,15 +1,15 @@
 FROM node:18 as build
 WORKDIR /usr/src/app
-ADD . .
-
-FROM node:18-slim as running
-WORKDIR /usr/src/app
-HEALTHCHECK CMD node healthcheck
-EXPOSE 3000
-
-FROM build as build-prod
+COPY package.json /usr/src/app/package.json 
+COPY package-lock.json /usr/src/app/package-lock.json
 RUN npm ci --production
 
-FROM running as production
-COPY --from=build-prod /usr/src/app .
+FROM node:18-slim as production
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app .
+COPY server.js /usr/src/app/server.js
+COPY config /usr/src/app/config
+COPY db /usr/src/app/db
+COPY server /usr/src/app/server
+EXPOSE 3000
 CMD ["node", "server.js"]

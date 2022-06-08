@@ -3,11 +3,17 @@
 const supertest = require('supertest');
 const assert = require('chai').assert;
 
-const status = require('../../server/status');
+const { getTestApp } = require('../../app');
 
-describe('private status check', () => {
+describe('status', () => {
+  let app;
+
+  before(async () => {
+    app = await getTestApp();
+  });
+
   it('returns OK', () =>
-    supertest(status)
+    supertest(app)
       .get('/status')
       .expect(200)
       .then(res => {

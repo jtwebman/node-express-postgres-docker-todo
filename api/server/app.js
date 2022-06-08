@@ -1,13 +1,29 @@
 'use strict';
 
 const express = require('express');
-const app = express();
+const pinoHttp = require('pino-http');
 
+const { options } = require('./logger');
 const indexRouter = require('./routers/index');
+const statusRouter = require('./routers/status');
 
-app.disable('x-powered-by');
-app.set('etag', false);
+function getApp(context) {
+  pinoHttp.logger = context.logger;
+  const app = express();
 
-app.use('/', indexRouter);
+  app.disable('x-powered-by');
+  app.set('etag', false);
+  app.use(
+    pinoHttp({
+      ...options,
+      logger: context.logger,
+    }),
+  );
 
-module.exports = app;
+  app.use('/', indexRouter);
+  app.get('/status', statusRouter);
+
+  return app;
+}
+
+module.exports = { getApp };

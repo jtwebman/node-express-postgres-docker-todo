@@ -23,9 +23,6 @@ function getDB(connection) {
 }
 
 function waitDBConnect(db, retries = 6) {
-  if (!db) {
-    return Promise.resolve(null);
-  }
   return retry(
     async () => {
       const conn = await db.connect();

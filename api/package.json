@@ -5,9 +5,9 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node server",
-    "start:dev": "nodemon server.js",
-    "test": "eslint . && nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive"
- },
+    "start:dev": "nodemon server.js | pino-pretty",
+    "test": "eslint . && NODE_ENV=test nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jtwebman/node-express-postgres-docker-todo.git"
@@ -25,11 +25,12 @@
     "express": "4.18.1",
     "pg-connection-string": "2.5.0",
     "pg-promise": "10.11.1",
-    "stoppable": "1.1.0",
-    "winston": "3.7.2"
+    "pino": "8.0.0",
+    "pino-http": "7.1.0",
+    "stoppable": "1.1.0"
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   },
   "devDependencies": {
     "chai": "4.3.6",
@@ -40,6 +41,7 @@
     "mocha": "10.0.0",
     "nodemon": "2.0.16",
     "nyc": "15.1.0",
+    "pino-pretty": "^8.0.0",
     "prettier": "2.6.2",
     "supertest": "6.2.3"
   }
