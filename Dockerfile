@@ -5,6 +5,7 @@ COPY package-lock.json /usr/src/app/package-lock.json
 RUN npm ci --production
 
 FROM node:18-slim as production
+RUN apt update && apt upgrade -y
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app .
 COPY server.js /usr/src/app/server.js
