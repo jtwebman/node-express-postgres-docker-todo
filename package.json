@@ -6,7 +6,9 @@
     "lint": "eslint .",
     "start": "node server",
     "start:dev": "nodemon server.js",
-    "test": "eslint . && NODE_ENV=test nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive --timeout 20000"
+    "test": "eslint . && NODE_ENV=test nyc --reporter=lcov --reporter=html --reporter=text-summary mocha --recursive --timeout 20000",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -28,7 +30,8 @@
     "pg-connection-string": "2.5.0",
     "pg-promise": "10.11.1",
     "stoppable": "1.1.0",
-    "winston": "^3.8.1"
+    "winston": "^3.8.1",
+    "@snyk/protect": "latest"
   },
   "engines": {
     "node": ">= 16"
@@ -44,5 +47,6 @@
     "nyc": "15.1.0",
     "prettier": "2.7.1",
     "supertest": "6.2.4"
-  }
+  },
+  "snyk": true
 }
