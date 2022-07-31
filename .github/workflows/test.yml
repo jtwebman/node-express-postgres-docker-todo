@@ -35,21 +35,7 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          flag-name: api
-          parallel: true
           path-to-lcov: ./coverage/lcov.info
-          base-path: api
-
-  finish-coverage:
-    name: Finish Coverage Report
-    needs: test-api
-    runs-on: ubuntu-latest
-    steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
   docker:
     name: Build Docker Images
     needs: finish-coverage
