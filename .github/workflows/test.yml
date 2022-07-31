@@ -54,6 +54,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Package Version
+        id: vars
+        run: echo ::set-output name=docker_tag::$(grep version package.json | awk -F \" '{print $4}')
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -67,4 +70,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jtwebman/node-express-postgres-docker-todo:latest
+          tags: jtwebman/node-express-postgres-docker-todo:${{ steps.vars.outputs.docker_tag }},jtwebman/node-express-postgres-docker-todo:latest
