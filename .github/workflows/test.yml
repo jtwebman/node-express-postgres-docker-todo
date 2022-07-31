@@ -71,3 +71,15 @@ jobs:
         with:
           push: true
           tags: jtwebman/node-express-postgres-docker-todo:${{ steps.vars.outputs.docker_tag }},jtwebman/node-express-postgres-docker-todo:latest
+  docker-security:
+    name: Check Docker Image Security
+    needs: docker
+    if: success() && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Snyk to check Docker image for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: jtwebman/node-express-postgres-docker-todo
