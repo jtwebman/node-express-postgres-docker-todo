@@ -16,11 +16,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Npm install
-        run: pushd api && npm ci && popd
+        run: npm ci
       - name: Start docker environment for testing
         run: docker-compose up -d
       - name: Run tests
-        run: pushd api && npm test && popd
+        run: npm test
       - name: Show docker compose logs
         run: docker-compose logs
         if: ${{ always() }}
@@ -33,7 +33,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           flag-name: api
           parallel: true
-          path-to-lcov: ./api/coverage/lcov.info
+          path-to-lcov: ./coverage/lcov.info
           base-path: api
 
   finish:

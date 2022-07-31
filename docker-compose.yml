@@ -3,22 +3,26 @@ version: '3.8'
 services:
   api:
     build:
-      context: ./api/
+      context: .
       dockerfile: Dockerfile.dev
     depends_on:
       - db
-    environment:
-      UV_THREADPOOL_SIZE: 128
-      NODE_ENV: development
     ports:
       - '3000:3000'
     tty: true
     volumes:
-      - ./api:/usr/src/app
+      - .:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      UV_THREADPOOL_SIZE: 128
+      NODE_ENV: development
+      LOG_LEVEL: info
+      PORT: 3000
+      PG_CONNECTION: postgres://todo-user:password123!@db:5432/dev-todo
+      PG_MIGRATION_CONNECTION: postgres://root-user:password123!@db:5432/postgres
   db-migration:
     build:
-      context: ./api/
+      context: .
       dockerfile: Dockerfile.dev
     command: ['node', './db/run-migration.js', '/usr/src/app/db/patches']
     environment:
@@ -30,7 +34,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./api:/usr/src/app
+      - .:/usr/src/app
   db:
     image: postgres:alpine
     environment:

@@ -6,7 +6,7 @@ const stoppable = require('stoppable');
 const { getApp } = require('./server/app');
 const { getContext } = require('./server/context');
 const { getDB } = require('./server/db/pg-client');
-const { logger, transport } = require('./server/logger');
+const { logger } = require('./server/logger');
 
 const db = getDB(config.PG_CONNECTION);
 
@@ -23,9 +23,7 @@ function shutdown(nodeApp, context, signal, value) {
     context.logger.info('Node app stopped.');
     context.db.$pool.end();
     context.logger.info('DB connections stopped.');
-    transport.on('ready', () => {
-      process.exit(128 + value);
-    });
+    process.exit(128 + value);
   });
 }
 
