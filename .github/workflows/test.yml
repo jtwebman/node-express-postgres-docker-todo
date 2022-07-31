@@ -18,7 +18,7 @@ jobs:
       - name: Npm install
         run: npm ci
       - name: Start docker environment for testing
-        run: docker-compose up -d
+        run: docker-compose up -d db
       - name: Run tests
         run: npm test
       - name: Show docker compose logs
@@ -67,4 +67,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: user/app:latest
+          tags: jtwebman/node-express-postgres-docker-todo:latest
