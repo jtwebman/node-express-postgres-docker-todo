@@ -27,6 +27,10 @@ jobs:
       - name: Stop docker environment for testing
         run: docker-compose down
         if: ${{ always() }}
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
@@ -83,3 +87,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: jtwebman/node-express-postgres-docker-todo
+          args: --severity-threshold=high
