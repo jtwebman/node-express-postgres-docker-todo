@@ -5,7 +5,7 @@ const morgan = require('morgan');
 
 const indexRouter = require('./routers/index');
 const statusRouter = require('./routers/status');
-const apiRouter = require('./routers/api');
+const getAuthRouter = require('./routers/auth');
 
 function getApp(context) {
   const app = express();
@@ -31,7 +31,16 @@ function getApp(context) {
 
   app.use('/', indexRouter(context));
   app.use('/status', statusRouter(context));
-  app.use('/api', apiRouter(context));
+  app.use('/auth', getAuthRouter(context));
+
+  app.use((err, req, res, next) => {
+    context.logger.error(`Unhandled error calling route ${req.method} ${req.originalUrl}`, {
+      stack: err.stack,
+      message: err.message,
+    });
+
+    res.status(500).json({ errors: [{ message: err.message, slug: 'unknown-error' }] });
+  });
 
   return app;
 }

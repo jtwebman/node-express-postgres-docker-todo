@@ -40,7 +40,7 @@ const patchFolder = path.join(__dirname, 'patches');
 async function runMigrations(config, logger) {
   logger.info('Starting DB Migrations');
   try {
-    if (!config.PG_CONNECTION && !config.PG_MIGRATION_CONNECTION) {
+    if (!config.PG_CONNECTION || !config.PG_MIGRATION_CONNECTION) {
       const missingSettings = [];
       if (!config.PG_CONNECTION) {
         missingSettings.push('PG_CONNECTION');
@@ -66,7 +66,7 @@ async function runMigrations(config, logger) {
       await migrationAdminDB.none(createDatabaseSql, [pgConfig.database]);
     }
 
-    migrationAdminDB.$pool.end();
+    await migrationAdminDB.$pool.end();
 
     const migrationDB = getDB({ ...pgMigrationConfig, database: pgConfig.database });
     await waitDBConnect(migrationDB);
@@ -124,7 +124,7 @@ async function runMigrations(config, logger) {
     await migrationDB.none(grantUserFunctionAccessSql, [pgConfig.user]);
 
     /* shutdown migration connection pool */
-    migrationDB.$pool.end();
+    await migrationDB.$pool.end();
   } catch (error) {
     logger.error(`Error running migrations: ${error.stack}`);
     throw error;

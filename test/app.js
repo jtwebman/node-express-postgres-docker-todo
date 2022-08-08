@@ -24,4 +24,5 @@ before(async () => {
 
 module.exports = {
   getTestApp,
+  db,
 };
