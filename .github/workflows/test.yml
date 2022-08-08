@@ -67,4 +67,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: jtwebman/node-express-postgres-docker-todo
-          args: --severity-threshold=critical
+          args: --fail-on=all
