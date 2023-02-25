@@ -2,7 +2,7 @@
 
 const { pick } = require('lodash');
 
-const { pgp } = require('../db/pg-client');
+const { pgp } = require('./db-client');
 
 const insertSupportedColumns = ['email', 'password'];
 

@@ -2,7 +2,7 @@
 
 const config = require('config');
 const winston = require('winston');
-const pjson = require('../package.json');
+const pjson = require('./package.json');
 
 let winstonFormat = winston.format.json();
 const metaData = {

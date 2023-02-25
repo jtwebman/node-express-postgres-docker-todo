@@ -6,7 +6,7 @@ const assert = require('chai').assert;
 const { parse } = require('pg-connection-string');
 
 const { getFakeLogger, messageExists } = require('../lib/logger');
-const { getDB } = require('../../server/db/pg-client');
+const { getDB } = require('../../data/db-client');
 const { runMigrations, patchFolder } = require('../../db/migrate');
 
 async function cleanUpDatabase(config) {

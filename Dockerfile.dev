@@ -12,5 +12,4 @@ COPY server.js /usr/src/app/server.js
 COPY config /usr/src/app/config
 COPY db /usr/src/app/db
 COPY server /usr/src/app/server
-EXPOSE 3000
-CMD ["npm", "run", "start:dev"]
+CMD ["node", "server.js"]

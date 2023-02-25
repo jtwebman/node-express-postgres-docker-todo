@@ -16,10 +16,9 @@ const pgpConfig = {
 
 const pgp = pgPromise(pgpConfig);
 pgp.pg.defaults.max = 50; // set pool size to 50
-pgp.pg.types.setTypeParser(20, parseInt);
 
-function getDB(connection) {
-  return pgp(connection);
+function getDB(conn) {
+  return pgp(conn);
 }
 
 function waitDBConnect(db, retries = 6) {

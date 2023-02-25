@@ -5,7 +5,7 @@ const path = require('path');
 const { QueryFile } = require('pg-promise');
 const { parse } = require('pg-connection-string');
 
-const { getDB, waitDBConnect } = require('../server/db/pg-client');
+const { getDB, waitDBConnect } = require('../data/db-client');
 
 const databaseExistsSql = `SELECT EXISTS (SELECT FROM pg_database WHERE datname = $1)`;
 

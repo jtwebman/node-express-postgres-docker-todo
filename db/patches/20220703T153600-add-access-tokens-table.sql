@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS  access_tokens (
-  id SERIAL NOT NULL PRIMARY KEY,
-  access_token TEXT NOT NULL,
-  user_id INT NOT NULL REFERENCES users (id),
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
-);

@@ -6,7 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      db-migration:
+        condition: service_completed_successfully
     ports:
       - '3000:3000'
     tty: true
@@ -15,11 +18,34 @@ services:
       - /usr/src/app/node_modules
     environment:
       UV_THREADPOOL_SIZE: 128
-      NODE_ENV: development
+      NODE_ENV: production
       LOG_LEVEL: info
       PORT: 3000
       PG_CONNECTION: postgres://todo-user:password123!@db:5432/dev-todo
-      PG_MIGRATION_CONNECTION: postgres://root-user:password123!@db:5432/postgres
+      REDIS_HOST: 'redis'
+      REDIS_PORT: 6379
+    command: ['npm', 'run', 'start:server:dev']
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      db:
+        condition: service_healthy
+      db-migration:
+        condition: service_completed_successfully
+    tty: true
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      UV_THREADPOOL_SIZE: 128
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PG_CONNECTION: postgres://todo-user:password123!@db:5432/dev-todo
+      REDIS_HOST: 'redis'
+      REDIS_PORT: 6379
+    command: ['npm', 'run', 'start:worker:dev']
   db-migration:
     build:
       context: .
@@ -27,12 +53,14 @@ services:
     command: ['node', './db/run-migration.js', '/usr/src/app/db/patches']
     environment:
       UV_THREADPOOL_SIZE: 128
-      NODE_ENV: development
+      NODE_ENV: production
+      LOG_LEVEL: info
       PG_CONNECTION: postgres://todo-user:password123!@db:5432/dev-todo
       PG_MIGRATION_CONNECTION: postgres://root-user:password123!@db:5432/postgres
     tty: true
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/usr/src/app
   db:
@@ -55,3 +83,7 @@ services:
       - ./db/postgresql.conf:/etc/postgresql.conf
     tmpfs:
       - /var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+    ports:
+      - '16379:6379'

@@ -7,7 +7,7 @@ const sinon = require('sinon');
 
 const { getTestApp, db } = require('../../app');
 const { cleanData } = require('../../lib/db');
-const userData = require('../../../server/data/user');
+const userData = require('../../../data/user');
 
 describe('/auth', () => {
   let app;
@@ -24,7 +24,7 @@ describe('/auth', () => {
   });
 
   describe('/auth/signup', () => {
-    it('returns error when missign email and password', () =>
+    it('returns error when missing email and password', () =>
       supertest(app)
         .post('/auth/signup')
         .set('Accept', 'application/json')
@@ -98,8 +98,7 @@ describe('/auth', () => {
             'archivedAt',
             'bannedAt',
           ]);
-          assert.isNumber(res.body.id);
-          assert.isAbove(res.body.id, 0);
+          assert.isString(res.body.id);
           assert.isString(res.body.createAt);
           assert.isNotEmpty(res.body.createAt);
           assert.isString(res.body.updatedAt);
@@ -142,7 +141,7 @@ describe('/auth', () => {
         .then(res => {
           assert.exists(res.body.errors);
           assert.isArray(res.body.errors);
-          assert.equal(some(res.body.errors, { slug: 'unknown-error' }), true, 'missing uknow error');
+          assert.equal(some(res.body.errors, { slug: 'unknown-error' }), true, 'missing unknown error');
         });
     });
   });

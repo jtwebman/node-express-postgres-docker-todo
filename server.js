@@ -4,11 +4,10 @@ const config = require('config');
 const stoppable = require('stoppable');
 
 const { getApp } = require('./server/app');
-const { getContext } = require('./server/context');
-const { getDB } = require('./server/db/pg-client');
-const { logger } = require('./server/logger');
-
-const db = getDB(config.PG_CONNECTION);
+const { getContext } = require('./context');
+const { logger } = require('./logger');
+const { getWorkers } = require('./workers/worker-client');
+const { getDB } = require('./data/db-client');
 
 const killSignals = {
   SIGHUP: 1,
@@ -57,7 +56,7 @@ function start(context) {
 }
 
 // First get context that waits for the DB to be available before starting the web server
-getContext(config, logger, db)
+getContext(config, logger, getDB(config.PG_CONNECTION), getWorkers(config))
   .then(start)
   .catch(error => {
     logger.info(`Failed to start services: ${error.stack}`);

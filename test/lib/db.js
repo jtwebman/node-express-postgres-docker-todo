@@ -1,6 +1,6 @@
 'use strict';
 
-const cleanTableQueries = ['DELETE FROM access_tokens', 'DELETE FROM users'];
+const cleanTableQueries = ['DELETE FROM users'];
 const queryCount = cleanTableQueries.length;
 
 async function cleanData(db) {

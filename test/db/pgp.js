@@ -4,7 +4,7 @@ const config = require('config');
 const sinon = require('sinon');
 const assert = require('chai').assert;
 
-const { getDB } = require('../../server/db/pg-client');
+const { getDB } = require('../../data/db-client');
 
 describe('pgp Tests', () => {
   const sandbox = sinon.createSandbox();
