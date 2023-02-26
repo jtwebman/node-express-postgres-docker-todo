@@ -16,7 +16,7 @@ jobs:
       - name: Run linter
         run: npm run lint
       - name: Start docker environment for testing
-        run: docker-compose up -d db
+        run: docker-compose up -d db redis
       - name: Run tests
         run: npm test
       - name: Show docker compose logs
