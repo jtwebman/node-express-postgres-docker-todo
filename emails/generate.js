@@ -1,4 +1,4 @@
-'use script';
+'use strict';
 
 const pug = require('pug');
 const inlineCss = require('inline-css');
