@@ -29,6 +29,8 @@ jobs:
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
