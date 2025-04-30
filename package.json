@@ -27,7 +27,7 @@
     "bullmq": "3.15.8",
     "config": "3.3.9",
     "express": "4.18.2",
-    "inline-css": "4.0.2",
+    "inline-css": "4.0.3",
     "lodash": "4.17.21",
     "morgan": "1.10.0",
     "pg-connection-string": "2.6.0",
